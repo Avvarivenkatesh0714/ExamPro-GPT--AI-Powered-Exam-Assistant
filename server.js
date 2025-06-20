@@ -47,7 +47,7 @@ app.use(
 );
 
 // Routes
-app.get('/', (req, res) => res.redirect('/login'));
+app.get('/', (req, res) => res.redirect('index'));
 app.get('/index', (req, res) => res.render('index'));
 app.get('/entry', (req, res) => res.render('entry'));
 
