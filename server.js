@@ -10,7 +10,7 @@ const Tesseract = require('tesseract.js');
 
 const app = express();
 
-// Mongoose Models
+// MongoDB Models
 const userSchema = new mongoose.Schema({
   username: { type: String, unique: true, required: true },
   password: { type: String, required: true },
@@ -24,14 +24,14 @@ const historySchema = new mongoose.Schema({
 const User = mongoose.model('User', userSchema);
 const History = mongoose.model('History', historySchema);
 
-// OpenAI Client Setup
+// OpenAI Setup
 const client = new OpenAI({
   apiKey: process.env.OPENROUTER_API_KEY,
   baseURL: 'https://openrouter.ai/api/v1',
 });
 const HTTP_REFERER = process.env.HTTP_REFERER || "";
 
-// View engine & middleware
+// Middleware
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -51,6 +51,7 @@ app.get('/', (req, res) => res.redirect('/login'));
 app.get('/index', (req, res) => res.render('index'));
 app.get('/entry', (req, res) => res.render('entry'));
 
+// Register
 app.get('/register', (req, res) => res.render('register', { error: null }));
 app.post('/register', async (req, res) => {
   try {
@@ -64,6 +65,7 @@ app.post('/register', async (req, res) => {
   }
 });
 
+// Login
 app.get('/login', (req, res) => res.render('login', { error: null }));
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
@@ -76,10 +78,12 @@ app.post('/login', async (req, res) => {
   }
 });
 
+// Logout
 app.get('/logout', (req, res) => {
   req.session.destroy(() => res.redirect('/login'));
 });
 
+// Dashboard (Ask question)
 app.get('/dashboard', (req, res) => {
   if (!req.session.username) return res.redirect('/login');
   res.render('dashboard', {
@@ -93,6 +97,7 @@ app.get('/dashboard', (req, res) => {
 app.post('/dashboard', async (req, res) => {
   if (!req.session.username) return res.redirect('/login');
   const { question, exam, action } = req.body;
+
   if (!question) {
     return res.render('dashboard', {
       username: req.session.username,
@@ -126,6 +131,7 @@ app.post('/dashboard', async (req, res) => {
     });
     const answer = response.choices[0].message.content.trim();
     await History.create({ username: req.session.username, question, answer });
+
     res.render('dashboard', {
       username: req.session.username,
       answer,
@@ -142,7 +148,7 @@ app.post('/dashboard', async (req, res) => {
   }
 });
 
-// OCR Upload Endpoint
+// Upload Image (OCR)
 app.post('/upload-doc', async (req, res) => {
   if (!req.session.username) return res.redirect('/login');
   if (!req.files || !req.files.image) {
@@ -160,7 +166,7 @@ app.post('/upload-doc', async (req, res) => {
 
   try {
     const { data: { text } } = await Tesseract.recognize(filePath, 'eng');
-    fs.unlinkSync(filePath); // cleanup
+    fs.unlinkSync(filePath); // delete file
 
     const gptResponse = await client.chat.completions.create({
       model: "gpt-3.5-turbo",
@@ -190,6 +196,7 @@ app.post('/upload-doc', async (req, res) => {
   }
 });
 
+// History View
 app.get('/history', async (req, res) => {
   if (!req.session.username) return res.redirect('/login');
   const records = await History.find({ username: req.session.username })
@@ -210,6 +217,7 @@ app.post('/delete_all_history', async (req, res) => {
   res.redirect('/history');
 });
 
+// Start Server
 async function startServer() {
   try {
     await mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/examprogpt');

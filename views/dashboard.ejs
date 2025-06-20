@@ -176,74 +176,73 @@
 
     </h2>
 
-    <div class="container">
-        <form method="POST">
-            <center>
-                <h1>Ace your exams with AI-powered assistance</h1>
-                <p>Select an exam, ask a question and select category to get started.</p>
-            </center>
+    <!-- Inside .container -->
+<div class="container">
+    <center>
+        <h1>Ace your exams with AI-powered assistance</h1>
+        <p>Select an exam, ask a question and select category to get started.</p>
+    </center>
 
-            <select name="exam" id="exam" required class="dropdown">
-                <option value="" disabled selected>Select an exam</option>
-                <option value="Central Govt Exam">Central Govt Exam</option>
-                <option value="NEET">NEET</option>
-                <option value="JEE">JEE</option>
-                <option value="State Board">State Board</option>
-                <option value="UPSC">UPSC</option>
-                <option value="SSC">SSC</option>
-                <option value="Bank Exams">Bank Exams</option>
-                <option value="Railway Exams">Railway Exams</option>
-                <option value="Others">Others</option>
-            </select>
+    <!-- ✅ Text-based question form -->
+    <form method="POST" action="/dashboard">
+        <select name="exam" class="dropdown" required>
+            <option value="" disabled selected>Select an exam</option>
+            <option value="Central Govt Exam">Central Govt Exam</option>
+            <option value="NEET">NEET</option>
+            <option value="JEE">JEE</option>
+            <option value="State Board">State Board</option>
+            <option value="UPSC">UPSC</option>
+            <option value="SSC">SSC</option>
+            <option value="Bank Exams">Bank Exams</option>
+            <option value="Railway Exams">Railway Exams</option>
+            <option value="Others">Others</option>
+        </select>
 
-            <textarea
-                name="question"
-                placeholder="Type question and select below to generate..."
-                class="dropdown1"
-                required
-            ></textarea>
-            
-            <form action="/upload-doc" method="POST" enctype="multipart/form-data">
-    <label>Upload Image of Question:</label>
-    <input type="file" name="image" accept="image/*" required />
-    <button type="submit">📷 Extract & Ask GPT</button>
-</form>
+        <textarea name="question" class="dropdown1" placeholder="Type question and select below to generate..." required></textarea>
 
-            <h2 style="float:left;">Generate:</h2><br />
+        <h2 style="float:left;">Generate:</h2><br />
 
-            <center>
-                <button type="submit" name="action" value="answer">🔍 Explanation</button>
-                <button type="submit" name="action" value="summarize">🧠 Summarize</button>
-                <button type="submit" name="action" value="keywords">🧷 Keywords</button>
-                <button type="submit" name="action" value="solution">📝 Solution</button>
-                <br /><br />
-                <button type="submit" name="action" value="concept">❓Concept</button>
-                <button type="submit" name="action" value="hint">💡Show Hint</button>
-                <button type="submit" name="action" value="translate">🌐 Translate</button>
-                <button type="submit" name="action" value="questions">✅ Questions</button>
-                <button type="submit" name="action" value="tips">🚀 Boost with Tips</button>
-                <br /><br />
-                <button type="submit" name="action" value="shortnotes">🎯 Short notes</button>
-            </center>
-        </form>
+        <center>
+            <button type="submit" name="action" value="answer">🔍 Explanation</button>
+            <button type="submit" name="action" value="summarize">🧠 Summarize</button>
+            <button type="submit" name="action" value="keywords">🧷 Keywords</button>
+            <button type="submit" name="action" value="solution">📝 Solution</button>
+            <br /><br />
+            <button type="submit" name="action" value="concept">❓Concept</button>
+            <button type="submit" name="action" value="hint">💡Show Hint</button>
+            <button type="submit" name="action" value="translate">🌐 Translate</button>
+            <button type="submit" name="action" value="questions">✅ Questions</button>
+            <button type="submit" name="action" value="tips">🚀 Boost with Tips</button>
+            <br /><br />
+            <button type="submit" name="action" value="shortnotes">🎯 Short notes</button>
+        </center>
+    </form>
 
-        <hr />
+    <div class="or-separator"><center>— OR —</center></div>
 
-        <% if (answer) { %>
-        <h3>Generated Answer:</h3>
-        <div class="answer-box"><%= answer %></div>
-        <% } %>
+    <!-- ✅ Image upload form -->
+    <form action="/upload-doc" method="POST" enctype="multipart/form-data">
+        <label>Upload Image of Question:</label>
+        <input type="file" name="image" accept="image/*" required />
+        <button type="submit">📷 Extract & Ask GPT</button>
+    </form>
 
-        <hr />
+    <hr />
 
-        <% if (messages && messages.length > 0) { %>
-        <ul class="flashes">
-            <% messages.forEach(({ category, message }) => { %>
-            <li class="<%= category %>"><%= message %></li>
-            <% }) %>
-        </ul>
-        <% } %>
-    </div>
+    <% if (answer) { %>
+    <h3>Generated Answer:</h3>
+    <div class="answer-box"><%= answer %></div>
+    <% } %>
+
+    <% if (messages && messages.length > 0) { %>
+    <ul class="flashes">
+        <% messages.forEach(({ category, message }) => { %>
+        <li class="<%= category %>"><%= message %></li>
+        <% }) %>
+    </ul>
+    <% } %>
+</div>
+
 
     <hr />
     <footer class="footer">
