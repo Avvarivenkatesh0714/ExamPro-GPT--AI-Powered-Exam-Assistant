@@ -212,10 +212,7 @@ app.post('/delete_all_history', async (req, res) => {
 
 async function startServer() {
   try {
-    await mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/examprogpt', {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/examprogpt');
     console.log('✅ MongoDB Connected');
     const PORT = process.env.PORT || 3000;
     app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
