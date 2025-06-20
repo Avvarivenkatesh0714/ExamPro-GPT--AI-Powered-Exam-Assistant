@@ -50,7 +50,7 @@ app.use(
 app.get('/', (req, res) => res.redirect('index'));
 app.get('/index', (req, res) => res.render('index'));
 app.get('/entry', (req, res) => res.render('entry'));
-
+app.get('/document', (req, res) => res.render('document'));
 // Register
 app.get('/register', (req, res) => res.render('register', { error: null }));
 app.post('/register', async (req, res) => {
